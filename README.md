@@ -15,3 +15,29 @@ notification_app/
 ├── .env                      # File konfigurasi untuk menyimpan kredensial
 └── composer.json             # Jika menggunakan Composer untuk PHP dependency management
 ```
+```
+notification_app/
+├── app/
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   │   └── com/
+│   │   │   │       └── pakelcomedy/
+│   │   │   │           └── notification_app/
+│   │   │   │               ├── ui/
+│   │   │   │               │   ├── fragments/
+│   │   │   │               │   │   └── NotificationFragment.kt
+│   │   │   │               ├── viewmodel/
+│   │   │   │               │   └── NotificationViewModel.kt
+│   │   │   │               ├── model/
+│   │   │   │               │   └── Notification.kt
+│   │   │   │               ├── api/
+│   │   │   │               │   ├── ApiClient.kt
+│   │   │   │               │   └── ApiService.kt
+│   │   │   ├── res/
+│   │   │   │   ├── layout/
+│   │   │   │   │   └── fragment_notification.xml
+│   │   │   └── AndroidManifest.xml
+│   └── build.gradle
+└── build.gradle
+```
