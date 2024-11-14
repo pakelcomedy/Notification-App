@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Center</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #444;
+        }
+        h1 {
+            color: #333;
+            margin: 20px 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+        }
+
+        /* Notification Form Styles */
+        .form-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .form-container input[type="text"] {
+            width: 80%;
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            border-right: 1px solid #ccc;
+        }
+        .form-container button {
+            width: 20%;
+            padding: 15px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+        }
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Notification Card Styles */
+        .notification-card {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .notification-card:hover {
+            transform: scale(1.02);
+        }
+        .notification-message {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .notification-timestamp {
+            font-size: 14px;
+            color: #888;
+            text-align: right;
+        }
+
+        /* Additional Styles for Notification Center */
+        .notifications {
+            display: none; /* Hidden by default, will be displayed when there are notifications */
+            flex-direction: column;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* Loading Styles */
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <h1>Notification Center</h1>
+
+    <!-- Notification Form -->
+    <div class="form-container">
+        <input type="text" id="notificationMessage" placeholder="Enter notification message here">
+        <button onclick="sendNotification()">Send</button>
+    </div>
+
+    <!-- Notification Display Container -->
+    <div class="container notifications" id="notifications">
+        <!-- Notification cards will be injected here dynamically -->
+    </div>
+
+    <!-- Loading Text -->
+    <div class="loading" id="loadingText" style="display: none;">
+        Loading notifications...
+    </div>
+
+    <script>
+        // Fetch notifications from the backend
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchNotifications();
+        });
+
+        function fetchNotifications() {
+            const notificationsContainer = document.getElementById("notifications");
+            const loadingText = document.getElementById("loadingText");
+
+            // Show loading text while fetching
+            loadingText.style.display = "block";
+            notificationsContainer.style.display = "none";
+
+            fetch('/api/get_notifications.php')
+                .then(response => response.json())
+                .then(data => {
+                    loadingText.style.display = "none"; // Hide loading text
+                    if (data.status === 'success' && data.data.length > 0) {
+                        notificationsContainer.style.display = "flex";
+
+                        // Clear previous notifications
+                        notificationsContainer.innerHTML = '';
+
+                        // Display each notification
+                        data.data.forEach(notification => {
+                            const notificationCard = document.createElement("div");
+                            notificationCard.classList.add("notification-card");
+
+                            const notificationMessage = document.createElement("div");
+                            notificationMessage.classList.add("notification-message");
+                            notificationMessage.textContent = notification.message;
+
+                            const notificationTimestamp = document.createElement("div");
+                            notificationTimestamp.classList.add("notification-timestamp");
+                            notificationTimestamp.textContent = new Date(notification.created_at).toLocaleString();
+
+                            // Append message and timestamp to the card
+                            notificationCard.appendChild(notificationMessage);
+                            notificationCard.appendChild(notificationTimestamp);
+
+                            // Append card to notifications container
+                            notificationsContainer.appendChild(notificationCard);
+                        });
+                    } else {
+                        notificationsContainer.innerHTML = '<p>No notifications yet</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching notifications:', error);
+                    loadingText.style.display = "none";
+                    notificationsContainer.innerHTML = '<p>Failed to load notifications.</p>';
+                });
+        }
+
+        // Send new notification to backend
+        function sendNotification() {
+            const message = document.getElementById('notificationMessage').value.trim();
+
+            if (message) {
+                fetch('api/send_notification.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        'message': message
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Notification sent successfully');
+                        fetchNotifications(); // Refresh notifications
+                    } else {
+                        alert('Failed to send notification');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to send notification');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
