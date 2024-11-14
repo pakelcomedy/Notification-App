@@ -125,42 +125,42 @@
         document.addEventListener('DOMContentLoaded', function () {
             fetchNotifications();
         });
-
+    
         function fetchNotifications() {
             const notificationsContainer = document.getElementById("notifications");
             const loadingText = document.getElementById("loadingText");
-
+    
             // Show loading text while fetching
             loadingText.style.display = "block";
             notificationsContainer.style.display = "none";
-
-            fetch('/api/get_notifications.php')
+    
+            fetch('/Notification-App/api/get_notifications.php')
                 .then(response => response.json())
                 .then(data => {
                     loadingText.style.display = "none"; // Hide loading text
                     if (data.status === 'success' && data.data.length > 0) {
                         notificationsContainer.style.display = "flex";
-
+    
                         // Clear previous notifications
                         notificationsContainer.innerHTML = '';
-
+    
                         // Display each notification
                         data.data.forEach(notification => {
                             const notificationCard = document.createElement("div");
                             notificationCard.classList.add("notification-card");
-
+    
                             const notificationMessage = document.createElement("div");
                             notificationMessage.classList.add("notification-message");
                             notificationMessage.textContent = notification.message;
-
+    
                             const notificationTimestamp = document.createElement("div");
                             notificationTimestamp.classList.add("notification-timestamp");
                             notificationTimestamp.textContent = new Date(notification.created_at).toLocaleString();
-
+    
                             // Append message and timestamp to the card
                             notificationCard.appendChild(notificationMessage);
                             notificationCard.appendChild(notificationTimestamp);
-
+    
                             // Append card to notifications container
                             notificationsContainer.appendChild(notificationCard);
                         });
@@ -171,21 +171,21 @@
                 .catch(error => {
                     console.error('Error fetching notifications:', error);
                     loadingText.style.display = "none";
-                    notificationsContainer.innerHTML = '<p>Failed to load notifications.</p>';
+                    notificationsContainer.innerHTML = '<p>Failed to load notifications. ' + error.message + '</p>';
                 });
         }
-
+    
         // Send new notification to backend
         function sendNotification() {
             const message = document.getElementById('notificationMessage').value.trim();
-
+    
             if (message) {
-                fetch('api/send_notification.php', {
+                fetch('/Notification-App/api/send_notification.php', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
+                        'Content-Type': 'application/json'  // Change to JSON format
                     },
-                    body: new URLSearchParams({
+                    body: JSON.stringify({
                         'message': message
                     })
                 })
@@ -200,10 +200,13 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Failed to send notification');
+                    alert('Failed to send notification: ' + error.message);
                 });
+            } else {
+                alert('Please enter a notification message');
             }
         }
     </script>
+    
 </body>
 </html>

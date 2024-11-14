@@ -4,8 +4,17 @@ require_once __DIR__ . '/../src/Notification.php';
 
 // Check if the request is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the input data from POST
-    $message = isset($_POST['message']) ? trim($_POST['message']) : '';
+    // Get raw POST data
+    $inputData = json_decode(file_get_contents('php://input'), true);
+
+    // Check if the data was successfully decoded
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid JSON format']);
+        exit;
+    }
+
+    // Get the message from the decoded JSON
+    $message = isset($inputData['message']) ? trim($inputData['message']) : '';
 
     // Check if the message is empty
     if (empty($message)) {
@@ -33,4 +42,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Send error response if the request method is not POST
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
 }
-?>
