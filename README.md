@@ -14,4 +14,4 @@ notification_app/
 ├── vendor/                   # Folder untuk dependensi Composer (misalnya, jika menggunakan library)
 ├── .env                      # File konfigurasi untuk menyimpan kredensial
 └── composer.json             # Jika menggunakan Composer untuk PHP dependency management
-````
+```
