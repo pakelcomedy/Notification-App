@@ -192,7 +192,6 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        alert('Notification sent successfully');
                         fetchNotifications(); // Refresh notifications
                     } else {
                         alert('Failed to send notification');

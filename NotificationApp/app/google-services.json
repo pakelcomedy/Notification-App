@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "619498602885",
+    "project_id": "notification-app-2166c",
+    "storage_bucket": "notification-app-2166c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:619498602885:android:671fb3341110b2d444c4ec",
+        "android_client_info": {
+          "package_name": "com.pakelcomedy.notification_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYcWcWDE1y0ZwRltKqOskkYiHBi94qoG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
